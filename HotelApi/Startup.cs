@@ -28,6 +28,9 @@ namespace HotelApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //servicio de cors, siempre debe ir al inicio de todo
+            services.AddCors();
+
             //Configurar cadena de Conexion con EF
             var connectionString=Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<HotelContext>(p=>p.UseSqlServer(connectionString));
@@ -60,6 +63,11 @@ namespace HotelApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options =>{
+                options.WithOrigins("http://localhost:8100");
+                options.AllowAnyMethod();
+                options.AllowAnyHeader();
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
